@@ -6,7 +6,7 @@ import java.io.FileInputStream
 import java.nio.channels.FileChannel
 import org.tensorflow.lite.Interpreter
 
-class WordBreakerKhmer(val context: Context): WordBreakerAdapter {
+class WordBreakerKhmer(private val context: Context): WordBreakerAdapter {
     private val TAG = "WordBreakerKhmer"
     private var N_UNIQUE_CHARS: Int = 133
     private var N_UNIQUE_POS: Int = 16
@@ -19,11 +19,8 @@ class WordBreakerKhmer(val context: Context): WordBreakerAdapter {
     private var model: Interpreter
 
     init {
-        Log.d(TAG, "load tflite model")
         model = loadModelFile()
-        Log.d(TAG, "prepare character map")
         prepareCharMap()
-        Log.d(TAG, "prepare pos map")
         preparePosMap()
     }
 
