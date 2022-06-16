@@ -10,6 +10,7 @@ import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.socret360.akara.models.Word
 import com.socret360.akara.models.Language
 import com.socret360.akara.models.Sequence
+import com.socret360.akara.nextwordpredictor.NextWordPredictor
 import com.socret360.akara.utils.LanguageUtil
 import com.socret360.akara.wordbreaker.WordBreaker
 
@@ -23,6 +24,14 @@ class Akara(context: Context) {
         .Builder()
         .setLanguage(Language.KHMER)
         .build(context)
+    private val englishNextWordPredictor: NextWordPredictor = NextWordPredictor
+        .Builder()
+        .setLanguage(Language.ENGLISH)
+        .build(context)
+    private val khmerNextWordPredictor: NextWordPredictor = NextWordPredictor
+        .Builder()
+        .setLanguage(Language.KHMER)
+        .build(context)
     private val languageDetector: LanguageIdentifier = LanguageIdentification.getClient()
 
     fun suggest(sentence: String) {
@@ -32,13 +41,15 @@ class Akara(context: Context) {
             val sequences = getSequences(sentence)
             val sequencesOfInterest = getSequencesOfInterest(sequences)
             val words = getWordsFromSequences(sequencesOfInterest)
-
+            val nextWordSuggestions = getNextWordSuggestions(words)
             Log.d(TAG, "Input Sequences")
             Log.d(TAG, sequences.toString())
             Log.d(TAG, "Sequences of Interests")
             Log.d(TAG, sequencesOfInterest.toString())
             Log.d(TAG, "Words")
             Log.d(TAG, words.toString())
+            Log.d(TAG, "Suggestions")
+            Log.d(TAG, nextWordSuggestions.toString())
         }
     }
 
@@ -124,5 +135,22 @@ class Akara(context: Context) {
         }
 
         return Language.OTHER
+    }
+
+    private fun getNextWordSuggestions(words: ArrayList<Word>): ArrayList<Word> {
+        var inputText = words.joinToString(separator = "%") {
+            it.text
+        }
+        inputText += "%"
+        Log.d(TAG, inputText)
+        val suggestions = if (words[0].language == Language.KHMER) {
+            ArrayList(khmerNextWordPredictor.predict(inputText).map {
+                Word(it, Language.KHMER)
+            })
+        } else {
+            arrayListOf<Word>()
+        }
+
+        return suggestions
     }
 }
