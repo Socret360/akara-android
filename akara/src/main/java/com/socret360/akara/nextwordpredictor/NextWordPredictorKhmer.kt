@@ -12,14 +12,13 @@ class NextWordPredictorKhmer(private val context: Context): NextWordPredictorAda
     private val PADDING_CHAR = '%'
 
 
-    private var model: Interpreter
+    private var model: Interpreter?
     private val charToIndex = HashMap<String, Int>()
     private val indexToChar = HashMap<Int, String>()
 
 
     init {
         this.model = loadModelFile()
-
         prepareCharMap()
     }
 
@@ -71,13 +70,20 @@ class NextWordPredictorKhmer(private val context: Context): NextWordPredictorAda
         return results
     }
 
+    override fun close() {
+        if (this.model != null) {
+            this.model!!.close()
+            this.model = null
+        }
+    }
+
     private fun getNextChar(input: String, nChars: Int = 4): List<String> {
         var inputText = input.takeLast(SEQUENCE_LENGTH)
         inputText = inputText.padStart(SEQUENCE_LENGTH, PADDING_CHAR)
 
         val inputVector = convertInput(inputText)
         val results = Array(1) { FloatArray(N_UNIQUE_CHARS) }
-        model.run(inputVector, results)
+        model!!.run(inputVector, results)
         val result = results[0]
         val sortedIndex = arrayListOf<FloatArray>()
         for( i in result.indices) {
