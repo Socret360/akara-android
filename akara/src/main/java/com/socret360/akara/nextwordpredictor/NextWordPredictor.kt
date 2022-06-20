@@ -14,6 +14,10 @@ class NextWordPredictor(builder: Builder) {
         return model.predict(input)
     }
 
+    fun close() {
+        model.close()
+    }
+
     class Builder() {
         private lateinit var language: Language
         internal lateinit var model: NextWordPredictorAdapter

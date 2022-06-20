@@ -42,4 +42,5 @@ dependencies {
     api 'org.tensorflow:tensorflow-lite-support:0.1.0'
     api 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
     api 'com.google.mlkit:language-id:17.0.3'
+    api 'com.gitlab.mvysny.konsume-xml:konsume-xml:1.0'
 }
