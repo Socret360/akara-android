@@ -6,4 +6,8 @@ class WordBreakerEnglish(context: Context): WordBreakerAdapter {
     override fun split(sentence: String): ArrayList<String> {
         return ArrayList(sentence.trim().split(" "))
     }
+
+    override fun close() {
+
+    }
 }

@@ -6,6 +6,7 @@ import kotlin.concurrent.thread
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.nl.languageid.LanguageIdentifier
 import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.socret360.akara.autocompletion.AutoCompletion
 
 import com.socret360.akara.models.Word
 import com.socret360.akara.models.Language
@@ -19,7 +20,6 @@ import kotlin.system.measureTimeMillis
 interface OnSuggestionListener {
     fun onCompleted(
         suggestions: List<String>,
-        corrections: List<String>,
         sequences: List<Sequence>,
         words: List<String>
     )
@@ -53,6 +53,14 @@ class Akara(context: Context) {
         .Builder()
         .setLanguage(Language.ENGLISH)
         .build(context)
+    private val englishAutoComplete: AutoCompletion = AutoCompletion
+        .Builder()
+        .setLanguage(Language.ENGLISH)
+        .build(context)
+    private val khmerAutoComplete: AutoCompletion = AutoCompletion
+        .Builder()
+        .setLanguage(Language.KHMER)
+        .build(context)
     private val languageDetector: LanguageIdentifier = LanguageIdentification.getClient()
 
     fun suggest(sentence: String, listener: OnSuggestionListener) {
@@ -61,35 +69,40 @@ class Akara(context: Context) {
                 val sequences = getSequences(sentence)
                 val sequencesOfInterest = getSequencesOfInterest(sequences)
                 val words = getWordsFromSequences(sequencesOfInterest)
-                val suggestions = arrayListOf<String>()
-                val corrections = arrayListOf<String>()
-                val isLastWordCorrect = if (words.last().language == Language.KHMER) {
-                    khmerSpellChecker.isCorrect(words.last().text)
-                } else {
-                    englishSpellChecker.isCorrect(words.last().text)
-                }
 
-                if (words.size == 1) {
-                    if (isLastWordCorrect) {
-                        suggestions.addAll(getNextWordSuggestions(words, true).map { it.text })
-                    } else {
-                        corrections.addAll(khmerSpellChecker.corrections(words.last().text).filter { !suggestions.contains(it) })
-                    }
+                val completions = getWordCompletions(words)
+
+                if (completions.size > 0) {
+                    listener.onCompleted(
+                        completions,
+                        sequences,
+                        words.map { it.text }
+                    )
                 } else {
-                    if (isLastWordCorrect) {
-                        suggestions.addAll(getNextWordSuggestions(words, true).map { it.text })
+                    if (LanguageUtil.KH_SYMS.contains(words.last().text.last())) {
+                        listener.onCompleted(
+                            arrayListOf(),
+                            sequences,
+                            words.map { it.text }
+                        )
                     } else {
-                        suggestions.addAll(getNextWordSuggestions(words, false).map { it.text })
-                        corrections.addAll(khmerSpellChecker.corrections(words.last().text).filter { !suggestions.contains(it) })
+                        val isLastWordCorrect = isWordCorrect(words.last())
+
+                        if (isLastWordCorrect) {
+                            listener.onCompleted(
+                                getNextWordSuggestions(words),
+                                sequences,
+                                words.map { it.text }
+                            )
+                        } else {
+                            listener.onCompleted(
+                                getWordCorrections(words.last()),
+                                sequences,
+                                words.map { it.text }
+                            )
+                        }
                     }
                 }
-
-                listener.onCompleted(
-                    suggestions.filter { khmerSpellChecker.isCorrect(it) },
-                    corrections,
-                    sequences,
-                    words.map { it.text }
-                )
             }
 
             Log.d(TAG, "suggestion time: $time")
@@ -127,7 +140,7 @@ class Akara(context: Context) {
     private fun getSequencesOfInterest(sequences: ArrayList<Sequence>): ArrayList<Sequence> {
         var prevLanguage: Language? = null
         val tmp: ArrayList<Sequence> = arrayListOf()
-        for (i in sequences.size-1 downTo 0) {
+        for (i in sequences.size - 1 downTo 0) {
             val currentLanguage = sequences[i].language
             if (prevLanguage != null && prevLanguage != currentLanguage) {
                 return tmp
@@ -179,23 +192,42 @@ class Akara(context: Context) {
         return Language.OTHER
     }
 
-    private fun getNextWordSuggestions(words: ArrayList<Word>, isSequenceCompleted: Boolean): ArrayList<Word> {
+    private fun getWordCompletions(words: ArrayList<Word>): ArrayList<String> {
+        return if (words.last().language == Language.ENGLISH) {
+            englishAutoComplete.predict(words.last().text)
+        } else {
+            khmerAutoComplete.predict(words.last().text)
+        }
+    }
+
+    private fun getNextWordSuggestions(words: ArrayList<Word>): List<String> {
         var inputText = words.joinToString(separator = "%") {
             it.text
         }
+        inputText += "%"
 
-        if (isSequenceCompleted) {
-            inputText += "%"
-        }
-
-        val suggestions = if (words[0].language == Language.KHMER) {
-            ArrayList(khmerNextWordPredictor.predict(inputText).map {
+        return if (words.last().language == Language.KHMER) {
+            khmerNextWordPredictor.predict(inputText).map {
                 Word(it, Language.KHMER)
-            })
+            }
         } else {
-            arrayListOf<Word>()
-        }
+            listOf<Word>()
+        }.map { it.text }
+    }
 
-        return suggestions
+    private fun getWordCorrections(word: Word): List<String> {
+        return if (word.language == Language.KHMER) {
+            khmerSpellChecker.corrections(word.text)
+        } else {
+            englishSpellChecker.corrections(word.text)
+        }
+    }
+
+    private fun isWordCorrect(word: Word): Boolean {
+        return if (word.language == Language.KHMER) {
+            khmerSpellChecker.isCorrect(word.text)
+        } else {
+            englishSpellChecker.isCorrect(word.text)
+        }
     }
 }

@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 //        akara.suggest("សាកលវិទ្យាល័យ ប៊ែលធី អន្តរជាតិ សូមធ្វើការកោតសរសើរចំពោះសមត្ថភាព ទេពកោសល្យ និងចំណេះដឹង របស់កញ្ញា ហេង សុទ្ធនិស្ស័យ អតីតនិស្សិតឆ្នើមនៃសាកលវិទ្យាល័យ ប៊ែលធី អន្តរជាតិ សិក្សាជំនាញ ទំនាក់ទំនងអន្តរជាតិ ដែលកញ្ញាបានចូលរួមប្រកួតក្នុងកម្មវិធី បវរកញ្ញាចក្រវាលកម្ពុជា ឆ្នាំ២០២២ (Miss Universe Cambodia 2022) និងឈានដល់វគ្គផ្ដាច់ព្រ័ត្រ ក្នុងវេលាយប់នេះ។  សូមជូនពរកញ្ញា ហេង សុទ្ធនិស្ស័យ ទទួលបានជោគជ័យនៅក្នុងការប្រកួតលេីកនេះ")
         //ឯងនេះមួយយប់ៗដេកខ្វល់រឿងអនាគតមិនដឹងធ្វើអីចិញ្ចឹមខ្លួនមួយនេះរស់
         //ខ្ញុំទៅ S12 Starbucks TK
-        val sentence = "I go to work"
+        val sentence = "ឯងនេះមួយយប់ៗដេកខ្វល់រឿងអនាគតមិនដឹងធ្វើអីចិញ្ចឹមខ្លួនមួយនេះរស់"
         var string = ArrayList(sentence.toCharArray().toMutableList())
         var input = ""
         var isProcessing = false
@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
                 akara.suggest(input, object: OnSuggestionListener {
                     override fun onCompleted(
                         suggestions: List<String>,
-                        corrections: List<String>,
                         sequences: List<Sequence>,
                         words: List<String>
                     ) {
@@ -46,7 +45,6 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "sequences: $sequences")
                         Log.d(TAG, "words: $words")
                         Log.d(TAG, "suggestions: ${suggestions.take(3)}")
-                        Log.d(TAG, "corrections: ${corrections.take(3)}")
                         Log.d(TAG, "======")
                         isProcessing = false
                     }

@@ -10,6 +10,10 @@ class WordBreaker(builder: Builder) {
         return model.split(sentence)
     }
 
+    fun close() {
+        model.close()
+    }
+
     class Builder() {
         private lateinit var language: Language
         internal lateinit var model: WordBreakerAdapter

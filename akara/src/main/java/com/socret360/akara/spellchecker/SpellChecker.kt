@@ -14,6 +14,10 @@ class SpellChecker(builder: Builder) {
         return model.corrections(word, numSuggestions)
     }
 
+    fun close() {
+        model.close()
+    }
+
     class Builder() {
         private lateinit var language: Language
         internal lateinit var model: SpellCheckerAdapter

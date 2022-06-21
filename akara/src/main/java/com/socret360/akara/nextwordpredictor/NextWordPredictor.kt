@@ -2,10 +2,6 @@ package com.socret360.akara.nextwordpredictor
 
 import android.content.Context
 import com.socret360.akara.models.Language
-import com.socret360.akara.wordbreaker.WordBreaker
-import com.socret360.akara.wordbreaker.WordBreakerAdapter
-import com.socret360.akara.wordbreaker.WordBreakerEnglish
-import com.socret360.akara.wordbreaker.WordBreakerKhmer
 
 class NextWordPredictor(builder: Builder) {
     private var model: NextWordPredictorAdapter = builder.model
