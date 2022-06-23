@@ -11,5 +11,7 @@ object LanguageUtil {
     val KH_SUB = "្៎់័៍៌៉៊៏".toCharArray()
     val KH_DIAC = "\u17c9\u17ca\u17cb\u17cc\u17cd\u17ce\u17cf\u17d0".toCharArray()
     val KH_SYMS = "៕។៛ៗ៚៙៘,.?!@#%^&*()_+-=[]/\\<>".toCharArray()
-    val KH_NUMBERS = "០១២៣៤៥៦៧៨៩0123456789".toCharArray()
+    val KH_NUMBERS = "០១២៣៤៥៦៧៨៩".toCharArray()
+    val EN_NUMBERS = "0123456789".toCharArray()
+    val NUMBERS = KH_NUMBERS + EN_NUMBERS
 }

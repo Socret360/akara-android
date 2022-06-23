@@ -8,4 +8,8 @@ class TrieNode(
     fun hasChar(charIndex: Int): Boolean {
         return this.children[charIndex] != null
     }
+
+    fun getChild(charIndex: Int): TrieNode? {
+        return this.children[charIndex]
+    }
 }

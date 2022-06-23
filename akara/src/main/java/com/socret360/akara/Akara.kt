@@ -11,6 +11,7 @@ import com.socret360.akara.autocompletion.AutoCompletion
 import com.socret360.akara.models.Word
 import com.socret360.akara.models.Language
 import com.socret360.akara.models.Sequence
+import com.socret360.akara.models.SuggestionType
 import com.socret360.akara.utils.LanguageUtil
 import com.socret360.akara.wordbreaker.WordBreaker
 import com.socret360.akara.spellchecker.SpellChecker
@@ -19,6 +20,7 @@ import kotlin.system.measureTimeMillis
 
 interface OnSuggestionListener {
     fun onCompleted(
+        suggestionType: SuggestionType?,
         suggestions: List<String>,
         sequences: List<Sequence>,
         words: List<String>
@@ -74,33 +76,28 @@ class Akara(context: Context) {
 
                 if (completions.size > 0) {
                     listener.onCompleted(
+                        SuggestionType.COMPLETION,
                         completions,
                         sequences,
                         words.map { it.text }
                     )
                 } else {
-                    if (LanguageUtil.KH_SYMS.contains(words.last().text.last())) {
+                    val isLastWordCorrect = isWordCorrect(words.last())
+
+                    if (isLastWordCorrect) {
                         listener.onCompleted(
-                            arrayListOf(),
+                            SuggestionType.NEXT_WORD,
+                            getNextWordSuggestions(words),
                             sequences,
                             words.map { it.text }
                         )
                     } else {
-                        val isLastWordCorrect = isWordCorrect(words.last())
-
-                        if (isLastWordCorrect) {
-                            listener.onCompleted(
-                                getNextWordSuggestions(words),
-                                sequences,
-                                words.map { it.text }
-                            )
-                        } else {
-                            listener.onCompleted(
-                                getWordCorrections(words.last()),
-                                sequences,
-                                words.map { it.text }
-                            )
-                        }
+                        listener.onCompleted(
+                            SuggestionType.CORRECTION,
+                            getWordCorrections(words.last()),
+                            sequences,
+                            words.map { it.text }
+                        )
                     }
                 }
             }
@@ -156,8 +153,9 @@ class Akara(context: Context) {
     private fun getWordsFromSequences(sequences: ArrayList<Sequence>): ArrayList<Word> {
         val words = arrayListOf<Word>()
         for (seq in sequences) {
+            seq.text = seq.text.filter { !LanguageUtil.NUMBERS.contains(it) }
             val wordBreaks = if (seq.language == Language.ENGLISH) {
-                englishWordBreaker.split(seq.text)
+                englishWordBreaker.split(seq.text.lowercase())
             } else {
                 khmerWordBreaker.split(seq.text)
             }
@@ -225,9 +223,9 @@ class Akara(context: Context) {
 
     private fun isWordCorrect(word: Word): Boolean {
         return if (word.language == Language.KHMER) {
-            khmerSpellChecker.isCorrect(word.text)
+            khmerAutoComplete.isCorrect(word.text)
         } else {
-            englishSpellChecker.isCorrect(word.text)
+            englishAutoComplete.isCorrect(word.text)
         }
     }
 }

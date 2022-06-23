@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.socret360.akara.Akara
 import com.socret360.akara.models.Sequence
 import com.socret360.akara.OnSuggestionListener
+import com.socret360.akara.models.SuggestionType
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         //ឯងនេះមួយយប់ៗដេកខ្វល់រឿងអនាគតមិនដឹងធ្វើអីចិញ្ចឹមខ្លួនមួយនេះរស់
         //ខ្ញុំទៅ S12 Starbucks TK
         val sentence = "ឯងនេះមួយយប់ៗដេកខ្វល់រឿងអនាគតមិនដឹងធ្វើអីចិញ្ចឹមខ្លួនមួយនេះរស់"
+//        val sentence = "would like to praise the ability"
         var string = ArrayList(sentence.toCharArray().toMutableList())
         var input = ""
         var isProcessing = false
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
                 input += string.removeFirst()
                 akara.suggest(input, object: OnSuggestionListener {
                     override fun onCompleted(
+                        suggestionType: SuggestionType?,
                         suggestions: List<String>,
                         sequences: List<Sequence>,
                         words: List<String>
@@ -44,7 +47,8 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "input: $input")
                         Log.d(TAG, "sequences: $sequences")
                         Log.d(TAG, "words: $words")
-                        Log.d(TAG, "suggestions: ${suggestions.take(3)}")
+                        Log.d(TAG, "suggestions: ${suggestions}")
+                        Log.d(TAG, "suggestion_type: $suggestionType")
                         Log.d(TAG, "======")
                         isProcessing = false
                     }

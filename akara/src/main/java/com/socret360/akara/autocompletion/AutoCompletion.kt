@@ -12,6 +12,10 @@ class AutoCompletion(builder: Builder) {
         return model.predict(text)
     }
 
+    fun isCorrect(word: String): Boolean {
+        return model.isCorrect(word)
+    }
+
     fun close() {
         model.close()
     }
