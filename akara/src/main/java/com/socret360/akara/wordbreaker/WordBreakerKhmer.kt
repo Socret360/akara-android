@@ -16,7 +16,7 @@ class WordBreakerKhmer(private val context: Context): WordBreakerAdapter {
     private var indexToChar = HashMap<Int, String>()
     private var posToIndex = HashMap<String, Int>()
     private var indexToPos = HashMap<Int, String>()
-    private var model: Interpreter
+    private var model: Interpreter?
 
     init {
         model = loadModelFile()
@@ -48,7 +48,7 @@ class WordBreakerKhmer(private val context: Context): WordBreakerAdapter {
             sequenceIdx += 1
         }
 
-        model.run(arrayOf(inputVector), results)
+        model!!.run(arrayOf(inputVector), results)
         val predicted = results[0]
 
         sequenceIdx = 0
@@ -124,6 +124,13 @@ class WordBreakerKhmer(private val context: Context): WordBreakerAdapter {
                 indexToPos[index] = pos
             }
             index += 1
+        }
+    }
+
+    override fun close() {
+        if (this.model != null) {
+            this.model!!.close()
+            this.model = null
         }
     }
 }

@@ -17,27 +17,6 @@ class SpellCheckerEnglish(val context: Context, val N: Int = 2): SpellCheckerAda
         this.root = this.loadModelFile()
     }
 
-    override fun isCorrect(word: String): Boolean {
-        val stack = arrayListOf(this.root)
-
-        while (stack.isNotEmpty()) {
-            val currNode = stack.removeLast()!!
-            val distanceCurrNode = StringUtil.editDistance(word, currNode.word)
-
-            if (distanceCurrNode == 0) {
-                return true
-            }
-
-            for (child in currNode.children) {
-                if (child.weight >= (distanceCurrNode - N) && child.weight <= (distanceCurrNode + N)) {
-                    stack.add(child)
-                }
-            }
-        }
-
-        return false
-    }
-
     override fun corrections(word: String, numSuggestions: Int): ArrayList<String> {
         val stack = arrayListOf(this.root)
         val corrections = arrayListOf<BKNode>()
@@ -72,7 +51,7 @@ class SpellCheckerEnglish(val context: Context, val N: Int = 2): SpellCheckerAda
 
     private fun loadModelFile(): BKNode {
         var xmlContent = ""
-        val inputStream = context.assets.open("english_spell_checker_model.xml")
+        val inputStream = context.assets.open("english_spell_correction_model.xml")
         inputStream.bufferedReader().forEachLine {
             if (it.isNotEmpty()) {
                 xmlContent += it

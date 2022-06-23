@@ -6,12 +6,12 @@ import com.socret360.akara.models.Language
 class SpellChecker(builder: Builder) {
     private var model: SpellCheckerAdapter = builder.model
 
-    fun isCorrect(word: String): Boolean {
-        return model.isCorrect(word)
-    }
-
     fun corrections(word: String, numSuggestions: Int = 3): ArrayList<String> {
         return model.corrections(word, numSuggestions)
+    }
+
+    fun close() {
+        model.close()
     }
 
     class Builder() {
