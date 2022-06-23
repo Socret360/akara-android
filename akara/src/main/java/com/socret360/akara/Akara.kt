@@ -71,7 +71,6 @@ class Akara(context: Context) {
                 val sequences = getSequences(sentence)
                 val sequencesOfInterest = getSequencesOfInterest(sequences)
                 val words = getWordsFromSequences(sequencesOfInterest)
-
                 val completions = getWordCompletions(words)
 
                 if (completions.size > 0) {
@@ -85,19 +84,23 @@ class Akara(context: Context) {
                     val isLastWordCorrect = isWordCorrect(words.last())
 
                     if (isLastWordCorrect) {
+
                         listener.onCompleted(
                             SuggestionType.NEXT_WORD,
                             getNextWordSuggestions(words),
                             sequences,
                             words.map { it.text }
                         )
+
                     } else {
+
                         listener.onCompleted(
                             SuggestionType.CORRECTION,
                             getWordCorrections(words.last()),
                             sequences,
                             words.map { it.text }
                         )
+
                     }
                 }
             }
