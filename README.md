@@ -93,9 +93,9 @@ Code contributions are welcome for this project and other AKARA related projects
 | akara-web | TBC      ||
 
 # Road Maps
-- [] Next Word Suggestion for English
-- [] Personalize Suggestions based on NGram
-- [] Support for Other Languages. (Planing for Thai and Chinese)
+- [ ] Next Word Suggestion for English
+- [ ] Personalize Suggestions based on NGram
+- [ ] Support for Other Languages. (Planing for Thai and Chinese)
 
 # License
 The MIT License (MIT)
