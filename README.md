@@ -1,4 +1,6 @@
 # AKARA Android - Multi-Language Word Suggestions Toolkit for Android
+![](https://img.shields.io/github/license/Socret360/akara-android) ![](https://img.shields.io/github/issues/Socret360/akara-android) ![](https://img.shields.io/github/forks/Socret360/akara-android) ![](https://img.shields.io/github/stars/Socret360/akara-android)
+
 The AKARA (អក្ខារា) project aims to give developers the power to easily add multi-language word suggestions support to their applications. AKARA Android brings this goal to life for Android developers.
 
 ## Language Support
@@ -64,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
 # Credits
 ### Sequence Breaker:
-- Using simple space splitting and MLKit to determine sequence language.
+- Using simple space splitting and [MLKit Language Identification](https://developers.google.com/ml-kit/language/identification) to determine sequence language.
 
 ### WordBreaker:
 - Khmer: Deep Learning (LSTM) based on [Joint Khmer Word Segmentation and Part-of-Speech Tagging Using Deep Learning](https://arxiv.org/abs/2103.16801) from [https://github.com/Socret360/joint-khmer-word-segmentation-and-pos-tagging](https://github.com/Socret360/joint-khmer-word-segmentation-and-pos-tagging).
@@ -90,7 +92,9 @@ Code contributions are welcome for this project and other AKARA related projects
 | ------------- |:-------------:| -----:|
 | akara-android      | Active | https://github.com/Socret360/akara-android |
 | akara-ios      | Active      |   https://github.com/Socret360/akara-ios |
+| akara-python | Active      | https://github.com/Socret360/akara-python |
 | akara-web | TBC      ||
+| akara-flutter | TBC      ||
 
 # Road Maps
 - [ ] Next Word Suggestion for English
