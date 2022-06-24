@@ -1,5 +1,5 @@
 # AKARA Android - Multi-Language Word Suggestions Toolkit for Android
-![](https://img.shields.io/github/license/Socret360/akara-android) ![](https://img.shields.io/github/issues/Socret360/akara-android) ![](https://img.shields.io/github/forks/Socret360/akara-android) ![](https://img.shields.io/github/stars/Socret360/akara-android)
+![](https://img.shields.io/github/license/Socret360/akara-android) ![](https://img.shields.io/badge/platform-android-green) ![](https://img.shields.io/github/v/tag/Socret360/akara-android?label=version) ![](https://img.shields.io/github/issues/Socret360/akara-android) ![](https://img.shields.io/github/forks/Socret360/akara-android) ![](https://img.shields.io/github/stars/Socret360/akara-android)
 
 The AKARA (អក្ខារា) project aims to give developers the power to easily add multi-language word suggestions support to their applications. AKARA Android brings this goal to life for Android developers.
 
